@@ -1,10 +1,10 @@
 # SR Demo
 
-A demonstration project for screen reader accessibility testing and development.
+A demonstration project to teach novices to a11y the basics of screen reader accessibility testing.
 
 ## Overview
 
-This repository contains examples and utilities for developing accessible web applications that work seamlessly with screen readers and other assistive technologies.
+This repository contains examples and pages in various state of accessibility compliance to teach how to develop and test web applications that work seamlessly with screen readers and other assistive technologies.
 
 ## Getting Started
 
