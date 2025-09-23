@@ -20,19 +20,113 @@ body {
     flex-direction: column;
 }
 
-/* Focus styles for keyboard navigation - WCAG 2.2 compliant */
+/* Focus styles for keyboard navigation only - WCAG 2.2 compliant */
+/* Remove default focus outline for mouse users */
 *:focus {
-    outline: 2px solid #005fcc;
-    outline-offset: 2px;
-}
-
-*:focus:not(:focus-visible) {
     outline: none;
 }
 
+/* Universal focus-visible styles for keyboard navigation only */
 *:focus-visible {
-    outline: 2px solid #005fcc;
+    outline: 3px solid #0066cc;
     outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+/* High contrast focus for buttons with background colors - keyboard only */
+button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px #0066cc;
+}
+
+/* Focus styles for links - keyboard only */
+a:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+    border-radius: 2px;
+}
+
+/* Ensure focus is visible on elements within different backgrounds - keyboard only */
+.demo-section *:focus-visible {
+    outline-color: #0066cc;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9), 0 0 0 4px rgba(0, 102, 204, 0.3);
+}
+
+.demo-section button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px #0066cc, 0 0 0 7px rgba(255, 255, 255, 0.8);
+}
+
+/* Special handling for elements within headers and footers - keyboard only */
+.site-header *:focus-visible,
+.site-footer *:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+}
+
+/* Ensure mobile menu toggle button has clear focus - keyboard only */
+.mobile-menu-toggle:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+    background-color: rgba(0, 102, 204, 0.1);
+}
+
+/* Enhanced focus visibility during keyboard navigation - keyboard only */
+.keyboard-navigation *:focus-visible {
+    outline-width: 3px !important;
+    outline-offset: 3px !important;
+    transition: outline 0.1s ease, box-shadow 0.1s ease;
+}
+
+.keyboard-navigation button:focus-visible {
+    box-shadow: 0 0 0 8px #0066cc !important;
+}
+
+/* Focus indicators for specific interactive elements - keyboard only */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+    border-color: #0066cc;
+}
+
+/* Ensure all focusable elements have consistent focus - keyboard only */
+[tabindex]:focus-visible,
+[role="button"]:focus-visible,
+[role="link"]:focus-visible,
+[role="menuitem"]:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+}
+
+/* Remove focus styles from non-interactive elements with tabindex="-1" */
+[tabindex="-1"]:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Ensure all interactive elements have accessible hover styles */
+button:hover:not(.nav-button):not(.disclosure-button):not(.modal-trigger-button):not(.modal-close-button):not(.modal-action-button):not(.modal-cancel-button):not(.mobile-menu-toggle) {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+a:hover:not(.nav-link):not(.submenu-link) {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Ensure minimum contrast ratios for all hover states */
+*:hover {
+    transition: all 0.2s ease;
 }
 
 /* Skip link for screen readers */
@@ -48,7 +142,8 @@ body {
     border-radius: 4px;
 }
 
-.skip-link:focus {
+.skip-link:focus,
+.skip-link:focus-visible {
     top: 6px;
 }
 
@@ -118,11 +213,15 @@ body {
 }
 
 .nav-link:hover,
-.nav-link:focus,
-.nav-button:hover,
-.nav-button:focus {
-    background-color: #e9ecef;
-    color: #007bff;
+.nav-button:hover {
+    background-color: #dee2e6;
+    color: #0056b3;
+}
+
+.nav-link:focus-visible,
+.nav-button:focus-visible {
+    background-color: #dee2e6;
+    color: #0056b3;
 }
 
 /* Dropdown menu styles */
@@ -178,9 +277,9 @@ body {
 }
 
 .submenu-link:hover,
-.submenu-link:focus {
-    background-color: #f8f9fa;
-    color: #007bff;
+.submenu-link:focus-visible {
+    background-color: #e9ecef;
+    color: #0056b3;
 }
 
 /* Mobile menu toggle */
@@ -191,6 +290,11 @@ body {
     padding: 0.5rem;
     cursor: pointer;
     border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.mobile-menu-toggle:hover {
+    background-color: #dee2e6;
 }
 
 .hamburger-icon {
@@ -248,6 +352,283 @@ h2 {
 
 .demo-section li {
     margin-bottom: 0.5rem;
+}
+
+.demo-section h3 {
+    font-size: 1.4rem;
+    margin: 1.5rem 0 1rem 0;
+    color: #007bff;
+}
+
+.demo-section h4 {
+    font-size: 1.2rem;
+    margin: 1rem 0 0.5rem 0;
+    color: #495057;
+}
+
+/* Disclosure widget styles */
+.disclosure-example {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.disclosure-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.disclosure-button:hover {
+    background-color: #0056b3;
+}
+
+
+
+.disclosure-button[aria-expanded="true"] {
+    background-color: #0056b3;
+}
+
+.disclosure-arrow {
+    font-size: 0.8rem;
+    transition: transform 0.2s ease;
+    margin-left: 0.5rem;
+}
+
+.disclosure-button[aria-expanded="true"] .disclosure-arrow {
+    transform: rotate(90deg);
+}
+
+/* Disclosure content styles */
+.disclosure-content {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+}
+
+.disclosure-content[hidden] {
+    display: none;
+}
+
+/* Inline disclosure - appears in document flow */
+.disclosure-inline {
+    margin-top: 0;
+}
+
+/* Floating disclosure - appears as overlay */
+.disclosure-floating {
+    position: absolute;
+    z-index: 1000;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+}
+
+/* Floating disclosure content - centered on screen */
+#floating-disclosure-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 500px;
+    width: 90%;
+    z-index: 1001;
+}
+
+.floating-content-wrapper {
+    position: relative;
+    padding: 1rem;
+}
+
+/* Modal styles */
+.modal-example {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+}
+
+.modal-trigger-button {
+    padding: 0.75rem 1.5rem;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-trigger-button:hover {
+    background-color: #218838;
+}
+
+/* Modal overlay and dialog */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal-overlay:not([hidden]) {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-dialog {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: scale(0.9) translateY(-20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay:not([hidden]) .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #6c757d;
+    cursor: pointer;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.modal-close-button:hover {
+    background-color: #dee2e6;
+    color: #343a40;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    line-height: 1.6;
+}
+
+.modal-body ul {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+.modal-body li {
+    margin-bottom: 0.5rem;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem 1.5rem;
+    border-top: 1px solid #dee2e6;
+    background-color: #f8f9fa;
+    border-radius: 0 0 8px 8px;
+}
+
+.modal-action-button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-action-button:hover {
+    background-color: #0056b3;
+}
+
+.modal-cancel-button {
+    padding: 0.5rem 1rem;
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.modal-cancel-button:hover {
+    background-color: #545b62;
+}
+
+/* Prevent body scroll when modal is open */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Modal focus styles consistency - keyboard only */
+.modal-overlay *:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+}
+
+.modal-overlay button:focus-visible {
+    outline: 3px solid #ffffff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px #0066cc, 0 0 0 7px rgba(255, 255, 255, 0.8);
 }
 
 /* Footer styles */
@@ -346,6 +727,49 @@ h2 {
     .content-container {
         padding: 0 0.5rem;
     }
+    
+    /* Disclosure responsive styles */
+    .disclosure-example {
+        padding: 0.75rem;
+    }
+    
+    .disclosure-floating {
+        left: 0.5rem;
+        right: 0.5rem;
+        margin-top: 0.25rem;
+    }
+    
+    /* Responsive styles for floating disclosure */
+    #floating-disclosure-content {
+        max-width: 400px;
+        width: 95%;
+    }
+    
+    .floating-content-wrapper {
+        padding: 0.75rem;
+    }
+    
+    /* Modal responsive styles */
+    .modal-dialog {
+        width: 95%;
+        max-width: 500px;
+    }
+    
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 1rem;
+    }
+    
+    .modal-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .modal-action-button,
+    .modal-cancel-button {
+        width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -360,10 +784,38 @@ h2 {
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
+    /* Enhanced focus styles for high contrast */
+    *:focus-visible {
+        outline: 4px solid #000;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px #fff, 0 0 0 6px #000;
+    }
+    
+    button:focus-visible {
+        outline: 4px solid #fff;
+        outline-offset: 2px;
+        box-shadow: 0 0 0 8px #000;
+    }
+    
     .nav-link:hover,
-    .nav-link:focus,
-    .nav-button:hover,
-    .nav-button:focus {
+    .nav-button:hover {
+        background-color: #000;
+        color: #fff;
+    }
+    
+    .nav-link:focus-visible,
+    .nav-button:focus-visible {
+        background-color: #000;
+        color: #fff;
+    }
+    
+    .submenu-link:hover,
+    .submenu-link:focus-visible {
+        background-color: #000;
+        color: #fff;
+    }
+    
+    .modal-close-button:hover {
         background-color: #000;
         color: #fff;
     }
@@ -382,6 +834,15 @@ h2 {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
+    }
+    
+    .modal-overlay,
+    .modal-dialog {
+        transition: none !important;
+    }
+    
+    .modal-dialog {
+        transform: none !important;
     }
 }
 

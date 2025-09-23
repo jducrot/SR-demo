@@ -12,11 +12,13 @@
         <div class="header-container">
             <!-- Company logo with accessible text alternative -->
             <div class="logo-container">
-                <img src="../assets/accessible tech company.jpg" alt="accessible tech company" class="company-logo" width="200px">
+                <img src="../assets/accessible tech company.jpg" 
+                     alt="accessible tech company" 
+                     class="company-logo">
             </div>
             
             <!-- Global navigation with accessible menu pattern -->
-            <nav class="global-navigation" aria-label="Global navigation">
+            <nav class="global-navigation" aria-label="Global">
                 <ul class="nav-list">
                     <li class="nav-item">
                         <a href="#page1" class="nav-link">Page 1</a>
@@ -34,7 +36,10 @@
                             Info
                             <span class="dropdown-arrow" aria-hidden="true">▼</span>
                         </button>
-                        <ul class="submenu" id="info-submenu" role="menu" aria-labelledby="info-menu-button">
+                        <ul class="submenu" 
+                            id="info-submenu" 
+                            role="menu" 
+                            aria-labelledby="info-menu-button">
                             <li role="none">
                                 <a href="#page3" class="submenu-link" role="menuitem">Page 3</a>
                             </li>
@@ -63,7 +68,7 @@
     <!-- Main content landmark -->
     <main class="main-content">
         <div class="content-container">
-            <h1>Welcome to Screen Reader Demo</h1>
+            <h1>Welcome to the Screen Reader Demo</h1>
             <p>This page demonstrates accessible web development practices following WCAG 2.2 guidelines.</p>
             
             <section class="demo-section">
@@ -79,10 +84,123 @@
             
             <section class="demo-section">
                 <h2>Navigation Instructions</h2>
-                <p>Use the Tab key to navigate through interactive elements. The Info menu can be activated with Enter or Space, and navigated with arrow keys.</p>
+                <p>
+                    Use the Tab key to navigate through interactive elements. The Info menu can be activated with Enter or Space, and navigated with arrow keys.
+                </p>
+            </section>
+            
+            <section class="demo-section">
+                <h2>Disclosures and Dialogs</h2>
+                <p>This section demonstrates accessible disclosure widgets and dialogs patterns that work seamlessly with screen readers and keyboard navigation.</p>
+                
+                <h3>Disclosure</h3>
+                <p>Disclosure widgets can reveal inline content directly below the trigger button, or floating content that appears overlaid on the page. Both patterns maintain proper focus management and screen reader announcements.</p>
+                
+                <!-- Inline Disclosure Example -->
+                <div class="disclosure-example">
+                    <h4>Inline Disclosure</h4>
+                    <button 
+                        class="disclosure-button" 
+                        aria-expanded="false" 
+                        aria-controls="inline-disclosure-content"
+                        id="inline-disclosure-button">
+                        Show Inline Content
+                        <span class="disclosure-arrow" aria-hidden="true">▶</span>
+                    </button>
+                    <div 
+                        class="disclosure-content disclosure-inline" 
+                        id="inline-disclosure-content"
+                        aria-labelledby="inline-disclosure-button"
+                        hidden>
+                        <p>This is inline disclosure content that appears directly below the button. It maintains the document flow and pushes other content down when expanded.</p>
+                        <ul>
+                            <li>Preserves document flow</li>
+                            <li>Content appears in logical reading order</li>
+                            <li>Good for supplementary information</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Floating Disclosure Example -->
+                <div class="disclosure-example">
+                    <h4>Floating Disclosure</h4>
+                    <button 
+                        class="disclosure-button" 
+                        aria-expanded="false" 
+                        aria-controls="floating-disclosure-content"
+                        id="floating-disclosure-button">
+                        Show Floating Content
+                        <span class="disclosure-arrow" aria-hidden="true">▶</span>
+                    </button>
+                    <div 
+                        class="disclosure-content disclosure-floating" 
+                        id="floating-disclosure-content"
+                        aria-labelledby="floating-disclosure-button"
+                        role="region"
+                        hidden>
+                        <div class="floating-content-wrapper">
+                            <p>This is floating disclosure content that appears as an overlay. It's positioned relative to the trigger button and doesn't affect the document flow.</p>
+                            <ul>
+                                <li>Appears as overlay content</li>
+                                <li>Doesn't disrupt document flow</li>
+                                <li>Ideal for contextual help or details</li>
+                                <li>Can be closed with Escape key or by clicking outside</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Modals</h3>
+                <p>Modal dialogs are overlay windows that appear on top of the main content and require user interaction before they can return to the main interface. They are commonly used for confirmations, forms, alerts, or displaying detailed information without navigating away from the current page. Modals should trap focus, be dismissible, and provide clear navigation back to the triggering element.</p>
+                
+                <div class="modal-example">
+                    <button 
+                        class="modal-trigger-button" 
+                        id="open-modal-button"
+                        aria-haspopup="dialog">
+                        Open Modal
+                    </button>
+                </div>
             </section>
         </div>
     </main>
+
+    <!-- Modal Dialog -->
+    <div 
+        class="modal-overlay" 
+        id="modal-overlay" 
+        role="dialog" 
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        aria-describedby="modal-description"
+        hidden>
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h2 id="modal-title">Accessible Modal Dialog</h2>
+                <button 
+                    class="modal-close-button" 
+                    id="modal-close-button"
+                    aria-label="Close modal dialog">
+                    ×
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-description">This is an accessible modal dialog that demonstrates proper WCAG 2.2 compliance. It includes:</p>
+                <ul>
+                    <li>Focus trapping within the modal</li>
+                    <li>Proper ARIA attributes for screen readers</li>
+                    <li>Keyboard navigation support</li>
+                    <li>Background scroll prevention</li>
+                    <li>Focus restoration to trigger button when closed</li>
+                </ul>
+                <p>You can close this modal by clicking the close button, pressing Escape, or clicking outside the modal content.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-action-button">Sample Action</button>
+                <button class="modal-cancel-button" id="modal-cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer landmark -->
     <footer class="site-footer">

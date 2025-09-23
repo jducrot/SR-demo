@@ -23,6 +23,12 @@
         
         // Initialize focus management
         initFocusManagement();
+        
+        // Initialize disclosure widgets
+        initDisclosureWidgets();
+        
+        // Initialize modal functionality
+        initModalDialog();
     }
 
     /**
@@ -209,6 +215,261 @@
                 mainContent.scrollIntoView();
             }
         });
+    }
+
+    /**
+     * Initialize modal dialog with accessible patterns
+     */
+    function initModalDialog() {
+        const openButton = document.getElementById('open-modal-button');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeButton = document.getElementById('modal-close-button');
+        const cancelButton = document.getElementById('modal-cancel-button');
+        
+        if (!openButton || !modalOverlay || !closeButton) return;
+        
+        let focusableElements = [];
+        let firstFocusableElement = null;
+        let lastFocusableElement = null;
+        
+        // Open modal
+        openButton.addEventListener('click', function() {
+            openModal();
+        });
+        
+        // Close modal handlers
+        closeButton.addEventListener('click', function() {
+            closeModal();
+        });
+        
+        if (cancelButton) {
+            cancelButton.addEventListener('click', function() {
+                closeModal();
+            });
+        }
+        
+        // Close modal on overlay click
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+        
+        // Handle keyboard events
+        document.addEventListener('keydown', function(e) {
+            if (!modalOverlay.hidden) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeModal();
+                } else if (e.key === 'Tab') {
+                    handleModalTabKey(e);
+                }
+            }
+        });
+        
+        function openModal() {
+            // Show modal
+            modalOverlay.hidden = false;
+            
+            // Prevent body scroll
+            document.body.classList.add('modal-open');
+            
+            // Set focus to first focusable element
+            updateFocusableElements();
+            if (firstFocusableElement) {
+                firstFocusableElement.focus();
+            }
+            
+            // Announce to screen readers
+            announceToScreenReader('Modal dialog opened');
+        }
+        
+        function closeModal() {
+            // Hide modal
+            modalOverlay.hidden = true;
+            
+            // Restore body scroll
+            document.body.classList.remove('modal-open');
+            
+            // Return focus to trigger button
+            openButton.focus();
+            
+            // Announce to screen readers
+            announceToScreenReader('Modal dialog closed');
+        }
+        
+        function updateFocusableElements() {
+            const focusableSelector = [
+                'button:not([disabled])',
+                '[href]',
+                'input:not([disabled])',
+                'select:not([disabled])',
+                'textarea:not([disabled])',
+                '[tabindex]:not([tabindex="-1"])'
+            ].join(',');
+            
+            focusableElements = Array.from(modalOverlay.querySelectorAll(focusableSelector));
+            firstFocusableElement = focusableElements[0];
+            lastFocusableElement = focusableElements[focusableElements.length - 1];
+        }
+        
+        function handleModalTabKey(e) {
+            if (focusableElements.length === 0) return;
+            
+            const activeElement = document.activeElement;
+            const currentIndex = focusableElements.indexOf(activeElement);
+            
+            if (e.shiftKey) {
+                // Shift + Tab (backward)
+                if (currentIndex <= 0) {
+                    e.preventDefault();
+                    lastFocusableElement.focus();
+                }
+            } else {
+                // Tab (forward)
+                if (currentIndex >= focusableElements.length - 1) {
+                    e.preventDefault();
+                    firstFocusableElement.focus();
+                }
+            }
+        }
+    }
+
+    /**
+     * Initialize disclosure widgets with accessible patterns
+     */
+    function initDisclosureWidgets() {
+        // Initialize all disclosure buttons
+        const disclosureButtons = document.querySelectorAll('.disclosure-button');
+        
+        disclosureButtons.forEach(button => {
+            const contentId = button.getAttribute('aria-controls');
+            const content = document.getElementById(contentId);
+            
+            if (!content) return;
+            
+            // Set initial state
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            content.hidden = !isExpanded;
+            
+            // Handle button click
+            button.addEventListener('click', function() {
+                toggleDisclosure(button, content);
+            });
+            
+            // Handle keyboard navigation
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDisclosure(button, content);
+                }
+            });
+        });
+        
+        // Close floating disclosures when clicking outside
+        document.addEventListener('click', function(e) {
+            const floatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
+            
+            floatingDisclosures.forEach(disclosure => {
+                const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
+                
+                if (triggerButton && 
+                    !triggerButton.contains(e.target) && 
+                    !disclosure.contains(e.target)) {
+                    closeDisclosure(triggerButton, disclosure);
+                }
+            });
+        });
+        
+        // Handle Escape key for floating disclosures
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const openFloatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
+                
+                openFloatingDisclosures.forEach(disclosure => {
+                    const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
+                    if (triggerButton) {
+                        closeDisclosure(triggerButton, disclosure);
+                        triggerButton.focus();
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Toggle disclosure widget state
+     */
+    function toggleDisclosure(button, content) {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        if (isExpanded) {
+            closeDisclosure(button, content);
+        } else {
+            openDisclosure(button, content);
+        }
+    }
+
+    /**
+     * Open disclosure widget
+     */
+    function openDisclosure(button, content) {
+        button.setAttribute('aria-expanded', 'true');
+        content.hidden = false;
+        
+        // Update button text for inline disclosures
+        if (content.classList.contains('disclosure-inline')) {
+            const buttonText = button.childNodes[0];
+            if (buttonText && buttonText.textContent.includes('Show')) {
+                buttonText.textContent = buttonText.textContent.replace('Show', 'Hide');
+            }
+        }
+        
+        // Position floating disclosures
+        if (content.classList.contains('disclosure-floating')) {
+            positionFloatingDisclosure(button, content);
+        }
+        
+        // Announce to screen readers
+        const contentType = content.classList.contains('disclosure-floating') ? 'floating' : 'inline';
+        announceToScreenReader(`${contentType} content expanded`);
+    }
+
+    /**
+     * Close disclosure widget
+     */
+    function closeDisclosure(button, content) {
+        button.setAttribute('aria-expanded', 'false');
+        content.hidden = true;
+        
+        // Update button text for inline disclosures
+        if (content.classList.contains('disclosure-inline')) {
+            const buttonText = button.childNodes[0];
+            if (buttonText && buttonText.textContent.includes('Hide')) {
+                buttonText.textContent = buttonText.textContent.replace('Hide', 'Show');
+            }
+        }
+        
+
+        
+        // Announce to screen readers
+        const contentType = content.classList.contains('disclosure-floating') ? 'floating' : 'inline';
+        announceToScreenReader(`${contentType} content collapsed`);
+    }
+
+    /**
+     * Position floating disclosure (centered on screen)
+     */
+    function positionFloatingDisclosure(button, content) {
+        // For centered floating disclosures, CSS handles the positioning
+        // No additional JavaScript positioning needed since we use fixed positioning
+        // This function is kept for consistency and potential future customization
+        
+        // Ensure the content uses the CSS-defined centered positioning
+        if (content.id === 'floating-disclosure-content') {
+            // CSS handles all positioning via fixed positioning and transform
+            // No JavaScript override needed
+        }
     }
 
     // Dropdown utility functions
