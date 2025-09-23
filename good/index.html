@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screen Reader Demo</title>
+    <title>Good Screen Reader Demo</title>
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -70,9 +70,19 @@
         <div class="content-container">
             <h1>Welcome to the Screen Reader Demo</h1>
             <p>This page demonstrates accessible web development practices following WCAG 2.2 guidelines.</p>
+
+            <nav class="secondary-navigation" aria-label="jump">
+                <strong>Jump to:</strong>
+                <ul>
+                    <li><a href="#accessibility-features">Accessibility Features</a></li>
+                    <li><a href="#navigation-instructions">Navigation Instructions</a></li>
+                    <li><a href="#disclosures-and-dialogs">Disclosures and Dialogs</a></li>
+                    <li><a href="#tables-and-tabs">Tables & Tabs</a></li>
+                </ul>
+            </nav>
             
             <section class="demo-section">
-                <h2>Accessibility Features</h2>
+                <h2 id="accessibility-features">Accessibility Features</h2>
                 <ul>
                     <li>Semantic HTML landmarks (header, main, footer)</li>
                     <li>Keyboard-accessible navigation</li>
@@ -83,14 +93,14 @@
             </section>
             
             <section class="demo-section">
-                <h2>Navigation Instructions</h2>
+                <h2 id="navigation-instructioh2">Navigation Instructions</h2>
                 <p>
                     Use the Tab key to navigate through interactive elements. The Info menu can be activated with Enter or Space, and navigated with arrow keys.
                 </p>
             </section>
             
             <section class="demo-section">
-                <h2>Disclosures and Dialogs</h2>
+                <h2 id="disclosures-and-dialogs">Disclosures and Dialogs</h2>
                 <p>This section demonstrates accessible disclosure widgets and dialogs patterns that work seamlessly with screen readers and keyboard navigation.</p>
                 
                 <h3>Disclosure</h3>
@@ -178,82 +188,262 @@
                         Open Dialog
                     </button>
                 </div>
+
+                <!-- Modal Dialog -->
+                <div 
+                    class="modal-overlay" 
+                    id="modal-overlay" 
+                    role="dialog" 
+                    aria-modal="true"
+                    aria-labelledby="modal-title"
+                    aria-describedby="modal-description"
+                    hidden>
+                    <div class="modal-dialog">
+                        <div class="modal-header">
+                            <h2 id="modal-title">Accessible Modal Dialog</h2>
+                            <button 
+                                class="modal-close-button" 
+                                id="modal-close-button"
+                                aria-label="Close modal dialog">
+                                ×
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p id="modal-description">This is an accessible modal dialog that demonstrates proper WCAG 2.2 compliance. It includes:</p>
+                            <ul>
+                                <li>Focus trapping within the modal</li>
+                                <li>Proper ARIA attributes for screen readers</li>
+                                <li>Keyboard navigation support</li>
+                                <li>Background scroll prevention</li>
+                                <li>Focus restoration to trigger button when closed</li>
+                            </ul>
+                            <p>You can close this modal by clicking the close button, pressing Escape, or clicking outside the modal content.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="modal-action-button">Sample Action</button>
+                            <button class="modal-cancel-button" id="modal-cancel-button">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plain Dialog -->
+                <div 
+                    class="dialog-overlay" 
+                    id="dialog-overlay" 
+                    role="dialog" 
+                    aria-labelledby="dialog-title"
+                    aria-describedby="dialog-description"
+                    hidden>
+                    <div class="dialog-container">
+                        <div class="dialog-header">
+                            <h2 id="dialog-title">Accessible Plain Dialog</h2>
+                            <button 
+                                class="dialog-close-button" 
+                                id="dialog-close-button"
+                                aria-label="Close dialog">
+                                ×
+                            </button>
+                        </div>
+                        <div class="dialog-body">
+                            <p id="dialog-description">This is an accessible plain dialog that demonstrates the difference from modal dialogs. Key features:</p>
+                            <ul>
+                                <li>Does not use aria-modal="true" allowing background access</li>
+                                <li>Proper ARIA attributes for screen readers</li>
+                                <li>Keyboard navigation support with Escape key</li>
+                                <li>Focus restoration to trigger button when closed</li>
+                                <li>Can be dismissed with Escape or close button</li>
+                            </ul>
+                            <p>Unlike modal dialogs, plain dialogs don't trap focus as strictly and allow screen readers to access background content when needed.</p>
+                        </div>
+                        <div class="dialog-footer">
+                            <button class="dialog-action-button">Sample Action</button>
+                            <button class="dialog-close-button-secondary">Close</button>
+                        </div>
+                    </div>
+                </div>
             </section>
-        </div>
+
+            <section class="demo-section">
+                <h2 id="tables-and-tabs">Tables & Tabs</h2>
+                <p class="section-description">Tables are used to present data in a structured format that maintains relationships between rows and columns. Accessible tables require proper semantic markup with headers, captions, and appropriate ARIA attributes to ensure screen reader users can understand the relationships between data cells and their headers.</p>
+
+                <!-- Basic Data Table Example -->
+                <div class="table-example">
+                    <h4>Basic Data Table</h4>
+                    <p class="section-description">A basic data table demonstrates proper use of table semantics including caption, headers, and data relationships. The table is responsive and includes proper labeling for screen readers.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <caption>Employee Schedule - September 2025</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Employee Name</th>
+                                    <th scope="col">Department</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Start Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">John Smith</th>
+                                    <td>Engineering</td>
+                                    <td>Full-time</td>
+                                    <td>Sept 1, 2025</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Maria Garcia</th>
+                                    <td>Design</td>
+                                    <td>Part-time</td>
+                                    <td>Sept 15, 2025</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">James Wilson</th>
+                                    <td>Marketing</td>
+                                    <td>Contract</td>
+                                    <td>Sept 30, 2025</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Complex Data Table Example -->
+                <div class="table-example">
+                    <h4>Complex Data Table</h4>
+                    <p class="section-description">A complex data table showing multiple header relationships and grouped data. This example demonstrates how to handle multi-level headers and data relationships while maintaining accessibility.</p>
+                    
+                    <div class="table-container">
+                        <table>
+                            <caption>Quarterly Sales Report 2025</caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col" rowspan="2">Product Category</th>
+                                    <th scope="colgroup" colspan="2">Q3</th>
+                                    <th scope="colgroup" colspan="2">Q4</th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Units</th>
+                                    <th scope="col">Revenue</th>
+                                    <th scope="col">Units</th>
+                                    <th scope="col">Revenue</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Electronics</th>
+                                    <td>150</td>
+                                    <td>$45,000</td>
+                                    <td>200</td>
+                                    <td>$60,000</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Accessories</th>
+                                    <td>300</td>
+                                    <td>$15,000</td>
+                                    <td>400</td>
+                                    <td>$20,000</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Software</th>
+                                    <td>250</td>
+                                    <td>$25,000</td>
+                                    <td>300</td>
+                                    <td>$30,000</td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th scope="row">Total</th>
+                                    <td>700</td>
+                                    <td>$85,000</td>
+                                    <td>900</td>
+                                    <td>$110,000</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="table-example">
+                    <h4>Tabs</h4>
+                    <p class="section-description">A tabbed interface allows users to switch between different views or sections of content without leaving the page. This example demonstrates how to create accessible tabs using ARIA roles and properties.</p>
+
+                    <div class="tab-container" role="tablist" aria-label="Form Controls">
+                        <button class="tab-button" role="tab" id="tab-checks" aria-selected="true" aria-controls="panel-checks">Checks</button>
+                        <button class="tab-button" role="tab" id="tab-radios" aria-selected="false" aria-controls="panel-radios">Radios</button>
+                        <button class="tab-button" role="tab" id="tab-switches" aria-selected="false" aria-controls="panel-switches">Switches</button>
+                    </div>
+
+                    <div class="tab-content" role="tabpanel" id="panel-checks" aria-labelledby="tab-checks">
+                        <p class="section-description">Check boxes are a type of input element that allows users to select one or more options from a set. They can be navigated using the keyboard by tabbing to the checkbox and using the spacebar to toggle its state.</p>
+                        <fieldset>
+                            <legend>Notification Preferences</legend>
+                            <div>
+                                <input type="checkbox" id="email-notifications" name="notifications" value="email">
+                                <label for="email-notifications">Email Notifications</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="sms-notifications" name="notifications" value="sms">
+                                <label for="sms-notifications">SMS Notifications</label>
+                            </div>
+                            <div>
+                                <input type="checkbox" id="push-notifications" name="notifications" value="push">
+                                <label for="push-notifications">Push Notifications</label>
+                            </div>
+                        </fieldset>
+                    </p>
+                    </div>
+                    <div class="tab-content" role="tabpanel" id="panel-radios" aria-labelledby="tab-radios" hidden>
+                        <h5>Radio Buttons</h5>
+                        <p class="section-description">Radio buttons are a type of input element that allows users to select one option from a set. They can be navigated using the keyboard by tabbing to the radio button and using the spacebar to select it.</p>
+                        <fieldset>
+                            <legend>Subscription Type</legend>
+                            <div>
+                                <input type="radio" id="subscription-monthly" name="subscription" value="monthly">
+                                <label for="subscription-monthly">Monthly Plan</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="subscription-annual" name="subscription" value="annual">
+                                <label for="subscription-annual">Annual Plan</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="subscription-lifetime" name="subscription" value="lifetime" disabled>
+                                <label for="subscription-lifetime">Lifetime Plan (Currently Unavailable)</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="tab-content" role="tabpanel" id="panel-switches" aria-labelledby="tab-switches" hidden>
+                        <h5>Switches</h5>
+                        <p class="section-description">Switches are a type of input element that allows users to toggle between two states, such as on and off. They can be navigated using the keyboard by tabbing to the switch and using the spacebar to toggle its state.</p>
+                        <fieldset>
+                            <legend>System Settings</legend>
+                            <div class="switch-group">
+                                <label class="switch" for="dark-mode">
+                                    <input type="checkbox" role="switch" id="dark-mode" name="dark-mode">
+                                    <span class="switch-slider"></span>
+                                </label>
+                                <label for="dark-mode">Dark Mode</label>
+                            </div>
+                            <div class="switch-group">
+                                <label class="switch" for="notifications">
+                                    <input type="checkbox" role="switch" id="notifications" name="notifications">
+                                    <span class="switch-slider"></span>
+                                </label>
+                                <label for="notifications">Enable Notifications</label>
+                            </div>
+                            <div class="switch-group">
+                                <label class="switch" for="auto-update">
+                                    <input type="checkbox" role="switch" id="auto-update" name="auto-update" disabled>
+                                    <span class="switch-slider"></span>
+                                </label>
+                                <label for="auto-update">Auto Update (Requires Premium)</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </section>
+        </div>            
     </main>
-
-    <!-- Modal Dialog -->
-    <div 
-        class="modal-overlay" 
-        id="modal-overlay" 
-        role="dialog" 
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
-        hidden>
-        <div class="modal-dialog">
-            <div class="modal-header">
-                <h2 id="modal-title">Accessible Modal Dialog</h2>
-                <button 
-                    class="modal-close-button" 
-                    id="modal-close-button"
-                    aria-label="Close modal dialog">
-                    ×
-                </button>
-            </div>
-            <div class="modal-body">
-                <p id="modal-description">This is an accessible modal dialog that demonstrates proper WCAG 2.2 compliance. It includes:</p>
-                <ul>
-                    <li>Focus trapping within the modal</li>
-                    <li>Proper ARIA attributes for screen readers</li>
-                    <li>Keyboard navigation support</li>
-                    <li>Background scroll prevention</li>
-                    <li>Focus restoration to trigger button when closed</li>
-                </ul>
-                <p>You can close this modal by clicking the close button, pressing Escape, or clicking outside the modal content.</p>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-action-button">Sample Action</button>
-                <button class="modal-cancel-button" id="modal-cancel-button">Cancel</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Plain Dialog -->
-    <div 
-        class="dialog-overlay" 
-        id="dialog-overlay" 
-        role="dialog" 
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-        hidden>
-        <div class="dialog-container">
-            <div class="dialog-header">
-                <h2 id="dialog-title">Accessible Plain Dialog</h2>
-                <button 
-                    class="dialog-close-button" 
-                    id="dialog-close-button"
-                    aria-label="Close dialog">
-                    ×
-                </button>
-            </div>
-            <div class="dialog-body">
-                <p id="dialog-description">This is an accessible plain dialog that demonstrates the difference from modal dialogs. Key features:</p>
-                <ul>
-                    <li>Does not use aria-modal="true" allowing background access</li>
-                    <li>Proper ARIA attributes for screen readers</li>
-                    <li>Keyboard navigation support with Escape key</li>
-                    <li>Focus restoration to trigger button when closed</li>
-                    <li>Can be dismissed with Escape or close button</li>
-                </ul>
-                <p>Unlike modal dialogs, plain dialogs don't trap focus as strictly and allow screen readers to access background content when needed.</p>
-            </div>
-            <div class="dialog-footer">
-                <button class="dialog-action-button">Sample Action</button>
-                <button class="dialog-close-button-secondary">Close</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Footer landmark -->
     <footer class="site-footer">

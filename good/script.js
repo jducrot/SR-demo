@@ -1,5 +1,5 @@
 /**
- * Accessible Navigation Menu Script
+ * Accessible Navigation Menu and Tab Widget Script
  * Implements WCAG 2.2 compliant keyboard navigation and screen reader support
  */
 
@@ -9,6 +9,7 @@
     // Wait for DOM to be ready
     document.addEventListener('DOMContentLoaded', function() {
         initAccessibleNavigation();
+        initTabWidget();
     });
 
     function initAccessibleNavigation() {
@@ -637,4 +638,103 @@
         }, 1000);
     }
 
+    function initTabWidget() {
+        const tablist = document.querySelector('[role="tablist"]');
+        if (!tablist) return;
+
+        const tabs = [...tablist.querySelectorAll('[role="tab"]')];
+        const panels = tabs.map(tab => {
+            const panelId = tab.getAttribute('aria-controls');
+            return document.getElementById(panelId);
+        });
+
+        // Initialize tab states
+        tabs.forEach((tab, index) => {
+            if (tab.getAttribute('aria-selected') === 'true') {
+                tab.tabIndex = 0;
+                panels[index]?.removeAttribute('hidden');
+            } else {
+                tab.setAttribute('aria-selected', 'false');
+                tab.tabIndex = -1;
+                panels[index]?.setAttribute('hidden', '');
+            }
+        });
+
+        // Handle click events
+        tablist.addEventListener('click', e => {
+            const tab = e.target.closest('[role="tab"]');
+            if (!tab || tab.getAttribute('aria-selected') === 'true') return;
+            switchTab(tab);
+        });
+
+        // Handle keyboard events
+        tablist.addEventListener('keydown', e => {
+            const targetTab = e.target.closest('[role="tab"]');
+            if (!targetTab) return;
+
+            let newTab;
+            switch (e.key) {
+                case 'ArrowLeft':
+                    newTab = targetTab.previousElementSibling;
+                    if (!newTab && tabs.length > 0) newTab = tabs[tabs.length - 1];
+                    if (newTab) {
+                        e.preventDefault();
+                        // Only move focus, don't activate
+                        newTab.focus();
+                    }
+                    break;
+                case 'ArrowRight':
+                    newTab = targetTab.nextElementSibling;
+                    if (!newTab && tabs.length > 0) newTab = tabs[0];
+                    if (newTab) {
+                        e.preventDefault();
+                        // Only move focus, don't activate
+                        newTab.focus();
+                    }
+                    break;
+                case 'Home':
+                    e.preventDefault();
+                    // Only move focus to first tab
+                    tabs[0].focus();
+                    break;
+                case 'End':
+                    e.preventDefault();
+                    // Only move focus to last tab
+                    tabs[tabs.length - 1].focus();
+                    break;
+                case 'Enter':
+                case ' ':
+                    e.preventDefault();
+                    // Only switch tabs on Enter or Space if it's not already selected
+                    if (targetTab.getAttribute('aria-selected') !== 'true') {
+                        switchTab(targetTab);
+                    }
+                    break;
+            }
+        });
+
+        function switchTab(newTab) {
+            // Find the old tab
+            const oldTab = tabs.find(tab => tab.getAttribute('aria-selected') === 'true');
+            
+            if (oldTab !== newTab) {
+                // Update tabs
+                oldTab.setAttribute('aria-selected', 'false');
+                oldTab.tabIndex = -1;
+                
+                newTab.setAttribute('aria-selected', 'true');
+                newTab.tabIndex = 0;
+
+                // Update panels
+                const newPanelId = newTab.getAttribute('aria-controls');
+                const oldPanelId = oldTab.getAttribute('aria-controls');
+                
+                document.getElementById(oldPanelId)?.setAttribute('hidden', '');
+                document.getElementById(newPanelId)?.removeAttribute('hidden');
+
+                // Announce tab switch to screen readers
+                announceMessage(`${newTab.textContent} tab selected`);
+            }
+        }
+    }
 })();
