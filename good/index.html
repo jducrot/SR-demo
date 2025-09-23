@@ -94,7 +94,7 @@
                 <p>This section demonstrates accessible disclosure widgets and dialogs patterns that work seamlessly with screen readers and keyboard navigation.</p>
                 
                 <h3>Disclosure</h3>
-                <p>Disclosure widgets can reveal inline content directly below the trigger button, or floating content that appears overlaid on the page. Both patterns maintain proper focus management and screen reader announcements.</p>
+                <p class="section-description">Disclosure widgets can reveal inline content directly below the trigger button, or floating content that appears overlaid on the page. Both patterns maintain proper focus management and screen reader announcements.</p>
                 
                 <!-- Inline Disclosure Example -->
                 <div class="disclosure-example">
@@ -150,15 +150,32 @@
                     </div>
                 </div>
                 
-                <h3>Modals</h3>
-                <p>Modal dialogs are overlay windows that appear on top of the main content and require user interaction before they can return to the main interface. They are commonly used for confirmations, forms, alerts, or displaying detailed information without navigating away from the current page. Modals should trap focus, be dismissible, and provide clear navigation back to the triggering element.</p>
-                
+                <h3>Dialogs</h3>
+                <p class="section-description">Dialog windows are overlay elements that appear on top of the main content and require user interaction before they can return to the main interface. They are commonly used for confirmations, forms, alerts, or displaying detailed information without navigating away from the current page. Dialogs should trap focus, be dismissible, and provide clear navigation back to the triggering element.</p>
+
+                <!-- Modal Dialog Example -->
                 <div class="modal-example">
+                    <h4>Modal Dialogs</h4>
+                    <p class="section-description">Modal dialogs are overlay windows that appear on top of the main content and require user interaction before they can return to the main interface. They are commonly used for confirmations, forms, alerts, or displaying detailed information without navigating away from the current page. Modals should trap focus, be dismissible, and provide clear navigation back to the triggering element.</p>
+                    
                     <button 
                         class="modal-trigger-button" 
                         id="open-modal-button"
                         aria-haspopup="dialog">
                         Open Modal
+                    </button>
+                </div>
+                
+                <!-- Plain Dialog Example -->
+                <div class="dialog-example">
+                    <h4>Plain Dialogs</h4>
+                    <p class="section-description">Plain dialogs are overlay windows that appear on top of the main content but differ from modal dialogs in that they don't necessarily prevent interaction with other parts of the page. Unlike modals (which use aria-modal="true"), plain dialogs allow screen readers to access the background content while still providing a focused interaction area. They're ideal for supplementary information, help text, or non-critical user interactions.</p>
+                    
+                    <button 
+                        class="dialog-trigger-button" 
+                        id="open-dialog-button"
+                        aria-haspopup="dialog">
+                        Open Dialog
                     </button>
                 </div>
             </section>
@@ -198,6 +215,42 @@
             <div class="modal-footer">
                 <button class="modal-action-button">Sample Action</button>
                 <button class="modal-cancel-button" id="modal-cancel-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Plain Dialog -->
+    <div 
+        class="dialog-overlay" 
+        id="dialog-overlay" 
+        role="dialog" 
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
+        hidden>
+        <div class="dialog-container">
+            <div class="dialog-header">
+                <h2 id="dialog-title">Accessible Plain Dialog</h2>
+                <button 
+                    class="dialog-close-button" 
+                    id="dialog-close-button"
+                    aria-label="Close dialog">
+                    ×
+                </button>
+            </div>
+            <div class="dialog-body">
+                <p id="dialog-description">This is an accessible plain dialog that demonstrates the difference from modal dialogs. Key features:</p>
+                <ul>
+                    <li>Does not use aria-modal="true" allowing background access</li>
+                    <li>Proper ARIA attributes for screen readers</li>
+                    <li>Keyboard navigation support with Escape key</li>
+                    <li>Focus restoration to trigger button when closed</li>
+                    <li>Can be dismissed with Escape or close button</li>
+                </ul>
+                <p>Unlike modal dialogs, plain dialogs don't trap focus as strictly and allow screen readers to access background content when needed.</p>
+            </div>
+            <div class="dialog-footer">
+                <button class="dialog-action-button">Sample Action</button>
+                <button class="dialog-close-button-secondary">Close</button>
             </div>
         </div>
     </div>

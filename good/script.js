@@ -29,6 +29,9 @@
         
         // Initialize modal functionality
         initModalDialog();
+        
+        // Initialize plain dialog functionality
+        initPlainDialog();
     }
 
     /**
@@ -332,6 +335,71 @@
                     firstFocusableElement.focus();
                 }
             }
+        }
+    }
+
+    /**
+     * Initialize plain dialog with accessible patterns
+     */
+    function initPlainDialog() {
+        const openButton = document.getElementById('open-dialog-button');
+        const dialogOverlay = document.getElementById('dialog-overlay');
+        const closeButton = document.getElementById('dialog-close-button');
+        const closeButtonSecondary = document.querySelector('.dialog-close-button-secondary');
+        
+        if (!openButton || !dialogOverlay || !closeButton) return;
+        
+        // Open dialog
+        openButton.addEventListener('click', function() {
+            openDialog();
+        });
+        
+        // Close dialog handlers
+        closeButton.addEventListener('click', function() {
+            closeDialog();
+        });
+        
+        if (closeButtonSecondary) {
+            closeButtonSecondary.addEventListener('click', function() {
+                closeDialog();
+            });
+        }
+        
+        // Close dialog on overlay click
+        dialogOverlay.addEventListener('click', function(e) {
+            if (e.target === dialogOverlay) {
+                closeDialog();
+            }
+        });
+        
+        // Handle keyboard events
+        document.addEventListener('keydown', function(e) {
+            if (!dialogOverlay.hidden && e.key === 'Escape') {
+                e.preventDefault();
+                closeDialog();
+            }
+        });
+        
+        function openDialog() {
+            // Show dialog
+            dialogOverlay.hidden = false;
+            
+            // Set focus to close button (first focusable element)
+            closeButton.focus();
+            
+            // Announce to screen readers
+            announceToScreenReader('Dialog opened');
+        }
+        
+        function closeDialog() {
+            // Hide dialog
+            dialogOverlay.hidden = true;
+            
+            // Return focus to trigger button
+            openButton.focus();
+            
+            // Announce to screen readers
+            announceToScreenReader('Dialog closed');
         }
     }
 
