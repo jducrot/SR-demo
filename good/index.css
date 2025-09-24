@@ -114,7 +114,7 @@ select:focus-visible {
 }
 
 /* Ensure all interactive elements have accessible hover styles */
-button:hover:not(.nav-button):not(.disclosure-button):not(.modal-trigger-button):not(.modal-close-button):not(.modal-action-button):not(.modal-cancel-button):not(.mobile-menu-toggle) {
+button:hover:not(.nav-button):not(.disclosure-button):not(.modal-trigger-button):not(.modal-close-button):not(.modal-action-button):not(.mobile-menu-toggle) {
     background-color: #e9ecef;
     color: #495057;
 }
@@ -522,6 +522,19 @@ h2 {
     transform: scale(1) translateY(0);
 }
 
+/* Focus styles for modal dialog container - keyboard only */
+.modal-dialog:focus,
+#modal-container:focus {
+    outline: none; /* Remove default outline since we have custom focus indicator */
+}
+
+.modal-dialog:focus-visible,
+#modal-container:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.9);
+}
+
 .modal-header {
     display: flex;
     align-items: center;
@@ -597,21 +610,6 @@ h2 {
     background-color: #0056b3;
 }
 
-.modal-cancel-button {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.modal-cancel-button:hover {
-    background-color: #0056b3;
-}
-
 /* Prevent body scroll when modal is open */
 body.modal-open {
     overflow: hidden;
@@ -655,29 +653,12 @@ body.modal-open {
     background-color: #0056b3;
 }
 
-/* Dialog overlay and container */
-.dialog-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1500;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.dialog-overlay:not([hidden]) {
-    opacity: 1;
-    visibility: visible;
-}
-
+/* Plain Dialog (no overlay needed) */
 .dialog-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
@@ -685,12 +666,27 @@ body.modal-open {
     width: 90%;
     max-height: 80vh;
     overflow-y: auto;
-    transform: scale(0.95) translateY(-10px);
-    transition: transform 0.3s ease;
+    z-index: 1500;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
-.dialog-overlay:not([hidden]) .dialog-container {
-    transform: scale(1) translateY(0);
+.dialog-container:not([hidden]) {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Focus styles for dialog container - keyboard only */
+.dialog-container:focus {
+    outline: none; /* Remove default outline since we have custom focus indicator */
+}
+
+.dialog-container:focus-visible {
+    outline: 3px solid #0066cc;
+    outline-offset: 2px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
 .dialog-header {
@@ -768,29 +764,14 @@ body.modal-open {
     background-color: #0056b3;
 }
 
-.dialog-close-button-secondary {
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.dialog-close-button-secondary:hover {
-    background-color: #0056b3;
-}
-
 /* Dialog focus styles consistency - keyboard only */
-.dialog-overlay *:focus-visible {
+.dialog-container *:focus-visible {
     outline: 3px solid #0066cc;
     outline-offset: 2px;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
 }
 
-.dialog-overlay button:focus-visible {
+.dialog-container button:focus-visible {
     outline: 3px solid #ffffff;
     outline-offset: 2px;
     box-shadow: 0 0 0 6px #0066cc, 0 0 0 7px rgba(255, 255, 255, 0.8);
@@ -935,8 +916,7 @@ body.modal-open {
         gap: 0.5rem;
     }
     
-    .modal-action-button,
-    .modal-cancel-button {
+    .modal-action-button {
         width: 100%;
     }
 }
@@ -991,6 +971,20 @@ body.modal-open {
     
     .submenu {
         border: 2px solid #000;
+    }
+    
+    /* High contrast focus styles for dialog containers */
+    .modal-dialog:focus-visible,
+    #modal-container:focus-visible {
+        outline: 4px solid #000;
+        outline-offset: 2px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px #fff, 0 0 0 6px #000;
+    }
+    
+    .dialog-container:focus-visible {
+        outline: 4px solid #000;
+        outline-offset: 2px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 2px #fff, 0 0 0 6px #000;
     }
 }
 

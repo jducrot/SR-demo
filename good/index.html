@@ -186,12 +186,13 @@
     <div 
         class="modal-overlay" 
         id="modal-overlay" 
-        role="dialog" 
-        aria-modal="true"
-        aria-labelledby="modal-title"
-        aria-describedby="modal-description"
         hidden>
-        <div class="modal-dialog">
+        <div id="modal-container" 
+             tabindex="-1"
+             role="dialog" 
+             aria-modal="true" 
+             class="modal-dialog" 
+             aria-labelledby="modal-title">
             <div class="modal-header">
                 <h2 id="modal-title">Accessible Modal Dialog</h2>
                 <button 
@@ -202,7 +203,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p id="modal-description">This is an accessible modal dialog that demonstrates proper WCAG 2.2 compliance. It includes:</p>
+                <p>This is an accessible modal dialog that demonstrates proper WCAG 2.2 compliance. It includes:</p>
                 <ul>
                     <li>Focus trapping within the modal</li>
                     <li>Proper ARIA attributes for screen readers</li>
@@ -212,22 +213,16 @@
                 </ul>
                 <p>You can close this modal by clicking the close button, pressing Escape, or clicking outside the modal content.</p>
             </div>
-            <div class="modal-footer">
-                <button class="modal-action-button">Sample Action</button>
-                <button class="modal-cancel-button" id="modal-cancel-button">Cancel</button>
-            </div>
         </div>
     </div>
 
     <!-- Plain Dialog -->
-    <div 
-        class="dialog-overlay" 
-        id="dialog-overlay" 
-        role="dialog" 
-        aria-labelledby="dialog-title"
-        aria-describedby="dialog-description"
-        hidden>
-        <div class="dialog-container">
+    <div class="dialog-container" 
+         id="dialog-container"
+         tabindex="-1" 
+         role="dialog" 
+         aria-labelledby="dialog-title"
+         hidden>
             <div class="dialog-header">
                 <h2 id="dialog-title">Accessible Plain Dialog</h2>
                 <button 
@@ -238,7 +233,7 @@
                 </button>
             </div>
             <div class="dialog-body">
-                <p id="dialog-description">This is an accessible plain dialog that demonstrates the difference from modal dialogs. Key features:</p>
+                <p>This is an accessible plain dialog that demonstrates the difference from modal dialogs. Key features:</p>
                 <ul>
                     <li>Does not use aria-modal="true" allowing background access</li>
                     <li>Proper ARIA attributes for screen readers</li>
@@ -248,12 +243,7 @@
                 </ul>
                 <p>Unlike modal dialogs, plain dialogs don't trap focus as strictly and allow screen readers to access background content when needed.</p>
             </div>
-            <div class="dialog-footer">
-                <button class="dialog-action-button">Sample Action</button>
-                <button class="dialog-close-button-secondary">Close</button>
-            </div>
         </div>
-    </div>
 
     <!-- Footer landmark -->
     <footer class="site-footer">

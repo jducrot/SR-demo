@@ -227,7 +227,6 @@
         const openButton = document.getElementById('open-modal-button');
         const modalOverlay = document.getElementById('modal-overlay');
         const closeButton = document.getElementById('modal-close-button');
-        const cancelButton = document.getElementById('modal-cancel-button');
         
         if (!openButton || !modalOverlay || !closeButton) return;
         
@@ -245,12 +244,6 @@
             closeModal();
         });
         
-        if (cancelButton) {
-            cancelButton.addEventListener('click', function() {
-                closeModal();
-            });
-        }
-        
         // Close modal on overlay click
         modalOverlay.addEventListener('click', function(e) {
             if (e.target === modalOverlay) {
@@ -265,7 +258,17 @@
                     e.preventDefault();
                     closeModal();
                 } else if (e.key === 'Tab') {
-                    handleModalTabKey(e);
+                    // If focused on modal container and Tab is pressed, move to first focusable element
+                    if (e.target.id === 'modal-container' && !e.shiftKey) {
+                        e.preventDefault();
+                        updateFocusableElements();
+                        if (firstFocusableElement) {
+                            firstFocusableElement.focus();
+                        }
+                    } else {
+                        // Handle tab trapping within modal
+                        handleModalTabKey(e);
+                    }
                 }
             }
         });
@@ -277,14 +280,23 @@
             // Prevent body scroll
             document.body.classList.add('modal-open');
             
-            // Set focus to first focusable element
+            // Update focusable elements for tab trapping first
             updateFocusableElements();
-            if (firstFocusableElement) {
-                firstFocusableElement.focus();
-            }
             
-            // Announce to screen readers
-            announceToScreenReader('Modal dialog opened');
+            // Focus management for accessibility - follow WCAG best practices
+            const manageFocus = async () => {
+                // Wait for modal to be fully rendered and animations to complete
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                await new Promise(resolve => requestAnimationFrame(resolve));
+                
+                // Focus the modal container with role="dialog" and aria-modal="true"
+                const modalContainer = document.getElementById('modal-container');
+                if (modalContainer) {
+                    modalContainer.focus();
+                } 
+            };
+            
+            manageFocus();
         }
         
         function closeModal() {
@@ -343,11 +355,10 @@
      */
     function initPlainDialog() {
         const openButton = document.getElementById('open-dialog-button');
-        const dialogOverlay = document.getElementById('dialog-overlay');
+        const dialogContainer = document.getElementById('dialog-container');
         const closeButton = document.getElementById('dialog-close-button');
-        const closeButtonSecondary = document.querySelector('.dialog-close-button-secondary');
         
-        if (!openButton || !dialogOverlay || !closeButton) return;
+        if (!openButton || !dialogContainer || !closeButton) return;
         
         // Open dialog
         openButton.addEventListener('click', function() {
@@ -359,33 +370,37 @@
             closeDialog();
         });
         
-        if (closeButtonSecondary) {
-            closeButtonSecondary.addEventListener('click', function() {
-                closeDialog();
-            });
-        }
-        
-        // Close dialog on overlay click
-        dialogOverlay.addEventListener('click', function(e) {
-            if (e.target === dialogOverlay) {
+        // Close dialog on overlay click (clicking outside dialog content)
+        dialogContainer.addEventListener('click', function(e) {
+            if (e.target === dialogContainer) {
                 closeDialog();
             }
         });
         
         // Handle keyboard events
         document.addEventListener('keydown', function(e) {
-            if (!dialogOverlay.hidden && e.key === 'Escape') {
-                e.preventDefault();
-                closeDialog();
+            if (!dialogContainer.hidden) {
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeDialog();
+                } else if (e.key === 'Tab') {
+                    // If focused on dialog container and Tab is pressed, move to first focusable element (close button)
+                    if (e.target.classList.contains('dialog-container') && !e.shiftKey) {
+                        e.preventDefault();
+                        closeButton.focus();
+                    }
+                }
             }
         });
         
         function openDialog() {
             // Show dialog
-            dialogOverlay.hidden = false;
+            dialogContainer.hidden = false;
             
-            // Set focus to close button (first focusable element)
-            closeButton.focus();
+            // Focus the dialog container directly for proper screen reader announcement
+            if (dialogContainer) {
+                dialogContainer.focus();
+            }
             
             // Announce to screen readers
             announceToScreenReader('Dialog opened');
@@ -393,7 +408,7 @@
         
         function closeDialog() {
             // Hide dialog
-            dialogOverlay.hidden = true;
+            dialogContainer.hidden = true;
             
             // Return focus to trigger button
             openButton.focus();
