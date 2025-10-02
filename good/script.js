@@ -1,229 +1,46 @@
 /**
- * Accessible Navigation Menu and Tab Widget Script
- * Implements WCAG 2.2 compliant keyboard navigation and screen reader support
+ * @file Accessible Navigation Menu and Tab Widget Script
+ * @description Implements WCAG 2.2 compliant keyboard navigation and screen reader support
+ * @version 1.0.0
  */
 
-(function() {
+const AccessibleUI = (function() {
     'use strict';
 
-    // Wait for DOM to be ready
-    document.addEventListener('DOMContentLoaded', function() {
-        initAccessibleNavigation();
-        initTabWidget();
-    });
+    // Cache DOM queries and commonly used values
+    const selectors = {
+        mainContent: '.main-content',
+        dropdownButton: '#info-menu-button',
+        submenu: '#info-submenu',
+        mobileToggle: '.mobile-menu-toggle',
+        navigation: '.global-navigation',
+        tablist: '[role="tablist"]'
+    };
 
-    function initAccessibleNavigation() {
-        // Initialize dropdown menu functionality
-        initDropdownMenu();
-        
-        // Initialize mobile menu functionality  
-        initMobileMenu();
-        
-        // Initialize keyboard navigation
-        initKeyboardNavigation();
-        
-        // Initialize focus management
-        initFocusManagement();
-        
-        // Initialize disclosure widgets
-        initDisclosureWidgets();
-        
-        // Initialize modal functionality
-        initModalDialog();
-        
-        // Initialize plain dialog functionality
-        initPlainDialog();
-    }
-
-    /**
-     * Initialize dropdown menu with accessible patterns
-     */
-    function initDropdownMenu() {
-        const dropdownButton = document.getElementById('info-menu-button');
-        const submenu = document.getElementById('info-submenu');
-        const dropdown = dropdownButton?.closest('.nav-dropdown');
-
-        if (!dropdownButton || !submenu || !dropdown) return;
-
-        // Toggle dropdown on button click
-        dropdownButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleDropdown(dropdown, dropdownButton, submenu);
-        });
-
-        // Handle keyboard navigation for dropdown
-        dropdownButton.addEventListener('keydown', function(e) {
-            switch(e.key) {
-                case 'ArrowDown':
-                    e.preventDefault();
-                    openDropdown(dropdown, dropdownButton, submenu);
-                    focusFirstMenuItem(submenu);
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    openDropdown(dropdown, dropdownButton, submenu);
-                    focusLastMenuItem(submenu);
-                    break;
-                case 'Escape':
-                    closeDropdown(dropdown, dropdownButton, submenu);
-                    break;
-            }
-        });
-
-        // Handle submenu keyboard navigation
-        submenu.addEventListener('keydown', function(e) {
-            const menuItems = submenu.querySelectorAll('[role="menuitem"]');
-            const currentIndex = Array.from(menuItems).indexOf(e.target);
-
-            switch(e.key) {
-                case 'ArrowDown':
-                    e.preventDefault();
-                    const nextIndex = (currentIndex + 1) % menuItems.length;
-                    menuItems[nextIndex].focus();
-                    break;
-                case 'ArrowUp':
-                    e.preventDefault();
-                    const prevIndex = currentIndex <= 0 ? menuItems.length - 1 : currentIndex - 1;
-                    menuItems[prevIndex].focus();
-                    break;
-                case 'Escape':
-                    e.preventDefault();
-                    closeDropdown(dropdown, dropdownButton, submenu);
-                    dropdownButton.focus();
-                    break;
-                case 'Tab':
-                    closeDropdown(dropdown, dropdownButton, submenu);
-                    break;
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!dropdown.contains(e.target)) {
-                closeDropdown(dropdown, dropdownButton, submenu);
-            }
-        });
-
-        // Close dropdown when focus leaves the dropdown area
-        dropdown.addEventListener('focusout', function(e) {
-            // Use setTimeout to handle focus transitions
-            setTimeout(() => {
-                if (!dropdown.contains(document.activeElement)) {
-                    closeDropdown(dropdown, dropdownButton, submenu);
-                }
-            }, 100);
-        });
-    }
-
-    /**
-     * Initialize mobile menu functionality
-     */
-    function initMobileMenu() {
-        const mobileToggle = document.querySelector('.mobile-menu-toggle');
-        const navigation = document.querySelector('.global-navigation');
-
-        if (!mobileToggle || !navigation) return;
-
-        mobileToggle.addEventListener('click', function() {
-            const isOpen = navigation.getAttribute('data-open') === 'true';
-            
-            if (isOpen) {
-                closeMobileMenu(mobileToggle, navigation);
-            } else {
-                openMobileMenu(mobileToggle, navigation);
-            }
-        });
-
-        // Close mobile menu when pressing Escape
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && navigation.getAttribute('data-open') === 'true') {
-                closeMobileMenu(mobileToggle, navigation);
-                mobileToggle.focus();
-            }
-        });
-
-        // Handle window resize to close mobile menu if switching to desktop view
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 768 && navigation.getAttribute('data-open') === 'true') {
-                closeMobileMenu(mobileToggle, navigation);
-            }
-        });
-    }
-
-    /**
-     * Initialize general keyboard navigation patterns
-     */
-    function initKeyboardNavigation() {
-        // Handle Enter and Space key activation for buttons and links
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                const target = e.target;
-                
-                if (target.matches('button') && e.key === ' ') {
-                    e.preventDefault();
-                    target.click();
-                }
-                
-                if (target.matches('a[role="menuitem"]') && e.key === ' ') {
-                    e.preventDefault();
-                    target.click();
-                }
-            }
-        });
-    }
-
-    /**
-     * Initialize focus management for better accessibility
-     */
-    function initFocusManagement() {
-        // Skip links for screen readers
-        addSkipLink();
-        
-        // Ensure focus is visible during keyboard navigation
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Tab') {
-                document.body.classList.add('keyboard-navigation');
-            }
-        });
-
-        document.addEventListener('mousedown', function() {
-            document.body.classList.remove('keyboard-navigation');
-        });
-    }
-
-    /**
-     * Add skip link for screen readers
-     */
-    function addSkipLink() {
-        const skipLink = document.createElement('a');
-        skipLink.href = '#main-content';
-        skipLink.className = 'skip-link';
-        skipLink.textContent = 'Skip to main content';
-        skipLink.id = 'skip-link';
-        
-        // Add skip link as first element in body
-        document.body.insertBefore(skipLink, document.body.firstChild);
-        
-        // Add id to main content for skip link target
-        const mainContent = document.querySelector('.main-content');
-        if (mainContent) {
-            mainContent.id = 'main-content';
-            mainContent.setAttribute('tabindex', '-1');
+    // Initialize the module
+    function init() {
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initAccessibleUI);
+        } else {
+            initAccessibleUI();
         }
-        
-        // Handle skip link functionality
-        skipLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            if (mainContent) {
-                mainContent.focus();
-                mainContent.scrollIntoView();
-            }
+    }
+
+    // Initialize all features
+    function initAccessibleUI() {
+        requestAnimationFrame(() => {
+            initDropdownMenu();
+            initMobileMenu();
+            initKeyboardNavigation();
+            initModalDialog();
+            initPlainDialog();
+            initDisclosureWidgets();
+            initFocusManagement();
+            initTabWidget();
+            initFormValidation();
         });
     }
 
-    /**
-     * Initialize modal dialog with accessible patterns
-     */
     function initModalDialog() {
         const openButton = document.getElementById('open-modal-button');
         const modalOverlay = document.getElementById('modal-overlay');
@@ -283,9 +100,6 @@
             if (firstFocusableElement) {
                 firstFocusableElement.focus();
             }
-            
-            // Announce to screen readers
-            announceToScreenReader('Modal dialog opened');
         }
         
         function closeModal() {
@@ -297,9 +111,6 @@
             
             // Return focus to trigger button
             openButton.focus();
-            
-            // Announce to screen readers
-            announceToScreenReader('Modal dialog closed');
         }
         
         function updateFocusableElements() {
@@ -339,9 +150,6 @@
         }
     }
 
-    /**
-     * Initialize plain dialog with accessible patterns
-     */
     function initPlainDialog() {
         const openButton = document.getElementById('open-dialog-button');
         const dialogOverlay = document.getElementById('dialog-overlay');
@@ -387,9 +195,6 @@
             
             // Set focus to close button (first focusable element)
             closeButton.focus();
-            
-            // Announce to screen readers
-            announceToScreenReader('Dialog opened');
         }
         
         function closeDialog() {
@@ -398,90 +203,9 @@
             
             // Return focus to trigger button
             openButton.focus();
-            
-            // Announce to screen readers
-            announceToScreenReader('Dialog closed');
         }
     }
 
-    /**
-     * Initialize disclosure widgets with accessible patterns
-     */
-    function initDisclosureWidgets() {
-        // Initialize all disclosure buttons
-        const disclosureButtons = document.querySelectorAll('.disclosure-button');
-        
-        disclosureButtons.forEach(button => {
-            const contentId = button.getAttribute('aria-controls');
-            const content = document.getElementById(contentId);
-            
-            if (!content) return;
-            
-            // Set initial state
-            const isExpanded = button.getAttribute('aria-expanded') === 'true';
-            content.hidden = !isExpanded;
-            
-            // Handle button click
-            button.addEventListener('click', function() {
-                toggleDisclosure(button, content);
-            });
-            
-            // Handle keyboard navigation
-            button.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleDisclosure(button, content);
-                }
-            });
-        });
-        
-        // Close floating disclosures when clicking outside
-        document.addEventListener('click', function(e) {
-            const floatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
-            
-            floatingDisclosures.forEach(disclosure => {
-                const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
-                
-                if (triggerButton && 
-                    !triggerButton.contains(e.target) && 
-                    !disclosure.contains(e.target)) {
-                    closeDisclosure(triggerButton, disclosure);
-                }
-            });
-        });
-        
-        // Handle Escape key for floating disclosures
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                const openFloatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
-                
-                openFloatingDisclosures.forEach(disclosure => {
-                    const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
-                    if (triggerButton) {
-                        closeDisclosure(triggerButton, disclosure);
-                        triggerButton.focus();
-                    }
-                });
-            }
-        });
-    }
-
-    /**
-     * Toggle disclosure widget state
-     */
-    function toggleDisclosure(button, content) {
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        
-        if (isExpanded) {
-            closeDisclosure(button, content);
-        } else {
-            openDisclosure(button, content);
-        }
-    }
-
-    /**
-     * Open disclosure widget
-     */
     function openDisclosure(button, content) {
         button.setAttribute('aria-expanded', 'true');
         content.hidden = false;
@@ -501,12 +225,8 @@
         
         // Announce to screen readers
         const contentType = content.classList.contains('disclosure-floating') ? 'floating' : 'inline';
-        announceToScreenReader(`${contentType} content expanded`);
     }
 
-    /**
-     * Close disclosure widget
-     */
     function closeDisclosure(button, content) {
         button.setAttribute('aria-expanded', 'false');
         content.hidden = true;
@@ -518,26 +238,15 @@
                 buttonText.textContent = buttonText.textContent.replace('Hide', 'Show');
             }
         }
-        
-
-        
-        // Announce to screen readers
-        const contentType = content.classList.contains('disclosure-floating') ? 'floating' : 'inline';
-        announceToScreenReader(`${contentType} content collapsed`);
     }
 
-    /**
-     * Position floating disclosure (centered on screen)
-     */
-    function positionFloatingDisclosure(button, content) {
-        // For centered floating disclosures, CSS handles the positioning
-        // No additional JavaScript positioning needed since we use fixed positioning
-        // This function is kept for consistency and potential future customization
+    function toggleDisclosure(button, content) {
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
         
-        // Ensure the content uses the CSS-defined centered positioning
-        if (content.id === 'floating-disclosure-content') {
-            // CSS handles all positioning via fixed positioning and transform
-            // No JavaScript override needed
+        if (isExpanded) {
+            closeDisclosure(button, content);
+        } else {
+            openDisclosure(button, content);
         }
     }
 
@@ -556,9 +265,6 @@
         dropdown.setAttribute('data-open', 'true');
         button.setAttribute('aria-expanded', 'true');
         submenu.style.display = 'block';
-        
-        // Announce to screen readers
-        announceToScreenReader('Submenu opened');
     }
 
     function closeDropdown(dropdown, button, submenu) {
@@ -571,71 +277,6 @@
                 submenu.style.display = '';
             }
         }, 100);
-    }
-
-    function focusFirstMenuItem(submenu) {
-        const firstItem = submenu.querySelector('[role="menuitem"]');
-        if (firstItem) {
-            firstItem.focus();
-        }
-    }
-
-    function focusLastMenuItem(submenu) {
-        const menuItems = submenu.querySelectorAll('[role="menuitem"]');
-        const lastItem = menuItems[menuItems.length - 1];
-        if (lastItem) {
-            lastItem.focus();
-        }
-    }
-
-    // Mobile menu utility functions
-    function openMobileMenu(toggle, navigation) {
-        navigation.setAttribute('data-open', 'true');
-        toggle.setAttribute('aria-expanded', 'true');
-        toggle.setAttribute('aria-label', 'Close navigation menu');
-        
-        // Focus first navigation link
-        const firstLink = navigation.querySelector('.nav-link, .nav-button');
-        if (firstLink) {
-            setTimeout(() => firstLink.focus(), 100);
-        }
-        
-        announceToScreenReader('Navigation menu opened');
-    }
-
-    function closeMobileMenu(toggle, navigation) {
-        navigation.setAttribute('data-open', 'false');
-        toggle.setAttribute('aria-expanded', 'false');
-        toggle.setAttribute('aria-label', 'Toggle navigation menu');
-        
-        announceToScreenReader('Navigation menu closed');
-    }
-
-    /**
-     * Announce message to screen readers using live region
-     */
-    function announceToScreenReader(message) {
-        let liveRegion = document.getElementById('live-region');
-        
-        if (!liveRegion) {
-            liveRegion = document.createElement('div');
-            liveRegion.id = 'live-region';
-            liveRegion.setAttribute('aria-live', 'polite');
-            liveRegion.setAttribute('aria-atomic', 'true');
-            liveRegion.style.position = 'absolute';
-            liveRegion.style.left = '-10000px';
-            liveRegion.style.width = '1px';
-            liveRegion.style.height = '1px';
-            liveRegion.style.overflow = 'hidden';
-            document.body.appendChild(liveRegion);
-        }
-        
-        liveRegion.textContent = message;
-        
-        // Clear the message after announcement
-        setTimeout(() => {
-            liveRegion.textContent = '';
-        }, 1000);
     }
 
     function initTabWidget() {
@@ -737,4 +378,427 @@
             }
         }
     }
+
+    function openMobileMenu(toggle, navigation) {
+        navigation.setAttribute('data-open', 'true');
+        toggle.setAttribute('aria-expanded', 'true');
+        toggle.setAttribute('aria-label', 'Close navigation menu');
+        
+        // Focus first navigation link
+        const firstLink = navigation.querySelector('.nav-link, .nav-button');
+        if (firstLink) {
+            setTimeout(() => firstLink.focus(), 100);
+        }
+    }
+
+    function closeMobileMenu(toggle, navigation) {
+        navigation.setAttribute('data-open', 'false');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Toggle navigation menu');
+    }
+
+    function focusFirstMenuItem(submenu) {
+        const firstItem = submenu.querySelector('[role="menuitem"]');
+        if (firstItem) {
+            firstItem.focus();
+        }
+    }
+
+    function focusLastMenuItem(submenu) {
+        const menuItems = submenu.querySelectorAll('[role="menuitem"]');
+        const lastItem = menuItems[menuItems.length - 1];
+        if (lastItem) {
+            lastItem.focus();
+        }
+    }
+
+    function positionFloatingDisclosure(button, content) {
+        // For centered floating disclosures, CSS handles the positioning
+        // No additional JavaScript positioning needed since we use fixed positioning
+        // This function is kept for consistency and potential future customization
+        
+        // Ensure the content uses the CSS-defined centered positioning
+        if (content.id === 'floating-disclosure-content') {
+            // CSS handles all positioning via fixed positioning and transform
+            // No JavaScript override needed
+        }
+    }
+    
+
+    function initDisclosureWidgets() {
+        // Initialize all disclosure buttons
+        const disclosureButtons = document.querySelectorAll('.disclosure-button');
+        
+        disclosureButtons.forEach(button => {
+            const contentId = button.getAttribute('aria-controls');
+            const content = document.getElementById(contentId);
+            
+            if (!content) return;
+            
+            // Set initial state
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
+            content.hidden = !isExpanded;
+            
+            // Handle button click
+            button.addEventListener('click', function() {
+                toggleDisclosure(button, content);
+            });
+            
+            // Handle keyboard navigation
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleDisclosure(button, content);
+                }
+            });
+        });
+        
+        // Close floating disclosures when clicking outside
+        document.addEventListener('click', function(e) {
+            const floatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
+            
+            floatingDisclosures.forEach(disclosure => {
+                const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
+                
+                if (triggerButton && 
+                    !triggerButton.contains(e.target) && 
+                    !disclosure.contains(e.target)) {
+                    closeDisclosure(triggerButton, disclosure);
+                }
+            });
+        });
+        
+        // Handle Escape key for floating disclosures
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const openFloatingDisclosures = document.querySelectorAll('.disclosure-floating:not([hidden])');
+                
+                openFloatingDisclosures.forEach(disclosure => {
+                    const triggerButton = document.querySelector(`[aria-controls="${disclosure.id}"]`);
+                    if (triggerButton) {
+                        closeDisclosure(triggerButton, disclosure);
+                        triggerButton.focus();
+                    }
+                });
+            }
+        });
+    }
+
+    function initMobileMenu() {
+        const mobileToggle = document.querySelector('.mobile-menu-toggle');
+        const navigation = document.querySelector('.global-navigation');
+
+        if (!mobileToggle || !navigation) return;
+
+        mobileToggle.addEventListener('click', function() {
+            const isOpen = navigation.getAttribute('data-open') === 'true';
+            
+            if (isOpen) {
+                closeMobileMenu(mobileToggle, navigation);
+            } else {
+                openMobileMenu(mobileToggle, navigation);
+            }
+        });
+
+        // Close mobile menu when pressing Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navigation.getAttribute('data-open') === 'true') {
+                closeMobileMenu(mobileToggle, navigation);
+                mobileToggle.focus();
+            }
+        });
+
+        // Handle window resize to close mobile menu if switching to desktop view
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768 && navigation.getAttribute('data-open') === 'true') {
+                closeMobileMenu(mobileToggle, navigation);
+            }
+        });
+    }
+
+    function initKeyboardNavigation() {
+        // Handle Enter and Space key activation for buttons and links
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                const target = e.target;
+                
+                if (target.matches('button') && e.key === ' ') {
+                    e.preventDefault();
+                    target.click();
+                }
+                
+                if (target.matches('a[role="menuitem"]') && e.key === ' ') {
+                    e.preventDefault();
+                    target.click();
+                }
+            }
+        });
+    }
+
+    function initFocusManagement() {
+        // Ensure focus is visible during keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+        });
+
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+    }
+
+    // Form validation module
+    function initFormValidation() {
+        const demoForm = document.getElementById('demo-form');
+        if (!demoForm) return;
+
+        const inputs = demoForm.querySelectorAll('input[required]');
+
+        // Validation configuration
+        const config = {
+            errorClass: 'error',
+            activeClass: 'active',
+            delay: 100 // Delay for screen reader announcements
+
+        };
+
+        // Validation rules with patterns and messages
+        const validationRules = {
+            name: {
+                pattern: /^[a-zA-Z\s'-]{2,}$/,
+                message: 'Please enter a valid name with at least 2 characters, using letters, hyphens, or apostrophes',
+                required: 'Name is required'
+            },
+            email: {
+                pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                message: 'Please enter a valid email address',
+                required: 'Email address is required'
+            },
+            password: {
+                pattern: /.{8,}/,
+                message: 'Password must be at least 8 characters long',
+                required: false // Password is optional
+            }
+        };
+
+        function showError(input, message) {
+            const errorId = `${input.id}-error`;
+            let errorElement = document.getElementById(errorId);
+            const demoForm = document.getElementById('demo-form');
+            
+            // Create error element if it doesn't exist
+            if (!errorElement) {
+                errorElement = document.createElement('div');
+                errorElement.id = errorId;
+                errorElement.className = 'error-message';
+                
+                // Insert error element after the input
+                input.parentNode.insertBefore(errorElement, input.nextSibling);
+            }
+            
+            // Update error message and styles
+            errorElement.textContent = message;
+            errorElement.classList.add('active');
+            input.setAttribute('aria-invalid', 'true');
+            
+            // Ensure error message is associated with the input
+            const currentDescribedBy = input.getAttribute('aria-describedby') || '';
+            const descriptors = currentDescribedBy.split(' ');
+            if (!descriptors.includes(errorId)) {
+                descriptors.push(errorId);
+                input.setAttribute('aria-describedby', descriptors.join(' '));
+            }
+        }
+
+        function clearError(input) {
+            const errorId = `${input.id}-error`;
+            const errorElement = document.getElementById(errorId);
+            
+            if (!errorElement) return;
+
+            // Clear error message
+            errorElement.textContent = '';
+            errorElement.classList.remove(config.activeClass);
+            
+            // Update input state
+            input.setAttribute('aria-invalid', 'false');
+            input.classList.remove(config.errorClass);
+            
+            // Update aria-describedby
+            updateDescribedBy(input, errorId, false);
+        }
+
+        // Helper function to update aria-describedby
+        function updateDescribedBy(input, errorId, add) {
+            const currentDescribedBy = input.getAttribute('aria-describedby') || '';
+            const descriptors = currentDescribedBy.split(' ').filter(d => d !== errorId);
+            
+            if (add) descriptors.push(errorId);
+            input.setAttribute('aria-describedby', descriptors.join(' '));
+        }
+
+        function validateInput(input) {
+            const value = input.value.trim();
+            const rule = validationRules[input.name];
+
+            if (!rule) return true; // Skip validation if no rule exists
+
+            if (!value) {
+                showError(input, rule.required);
+                return false;
+            }
+
+            if (!rule.pattern.test(value)) {
+                showError(input, rule.message);
+                return false;
+            }
+
+            clearError(input);
+            return true;
+        }
+
+        // Function to validate all inputs and return the first invalid one
+        function validateAllInputs() {
+            let firstInvalid = null;
+            inputs.forEach(input => {
+                if (!validateInput(input) && !firstInvalid) {
+                    firstInvalid = input;
+                }
+            });
+            return firstInvalid;
+        }
+
+        // Function to focus the first invalid input
+        function focusFirstInvalid(input) {
+            if (input) {
+                setTimeout(() => {
+                    input.focus();
+                }, 100);
+            }
+        }
+
+        // Add blur event listeners for validation
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => validateInput(input))
+        });
+
+        // Initialize form submission handling
+        if (demoForm) {
+            demoForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Clear any existing submission error messages
+                const formStatus = document.querySelector('.form-status');
+                if (formStatus) formStatus.remove();
+                
+                // Validate all inputs
+                const firstInvalid = validateAllInputs();
+
+                if (firstInvalid) {
+                    // Create a status message for screen readers
+                    const formError = document.createElement('div');
+                    formError.className = 'form-status error';
+                    formError.textContent = 'Please correct the errors in the form before submitting.';
+                    
+                    // Insert status message at the top of the form
+                    demoForm.insertBefore(formError, demoForm.firstChild);
+                    
+                    // Focus the first invalid input
+                    setTimeout(() => {
+                        firstInvalid.focus();
+                        formError.textContent = `Form has errors. ${formError.textContent}`;
+                    }, 100);
+                } else {
+                    // Form is valid
+                    const successMessage = document.createElement('div');
+                    successMessage.className = 'form-status success';
+                    successMessage.setAttribute('aria-live', 'polite');
+                    successMessage.textContent = 'Form submitted successfully!';
+                    
+                    demoForm.insertBefore(successMessage, demoForm.firstChild);
+                    demoForm.reset();
+                    
+                    // Clear any remaining error states
+                    inputs.forEach(clearError);
+                    
+                    // Focus the success message for screen readers
+                    setTimeout(() => successMessage.focus(), 100);
+                }
+            });
+        }
+    }
+
+    function initDropdownMenu() {
+        const dropdownButton = document.querySelector(selectors.dropdownButton);
+        const submenu = document.querySelector(selectors.submenu);
+        const dropdown = dropdownButton?.closest('.nav-dropdown');
+
+        if (!dropdownButton || !submenu || !dropdown) return;
+
+        function handleDropdownClick(e) {
+            e.preventDefault();
+            toggleDropdown();
+        }
+
+        function handleDropdownKeyboard(e) {
+            const menuItems = [...submenu.querySelectorAll('[role="menuitem"]')];
+            const currentIndex = menuItems.indexOf(document.activeElement);
+
+            switch(e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    menuItems[(currentIndex + 1) % menuItems.length]?.focus();
+                    break;
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const prevIndex = currentIndex <= 0 ? menuItems.length - 1 : currentIndex - 1;
+                    menuItems[prevIndex]?.focus();
+                    break;
+                case 'Escape':
+                    e.preventDefault();
+                    closeDropdown();
+                    dropdownButton.focus();
+                    break;
+            }
+        }
+
+        function toggleDropdown() {
+            const isExpanded = dropdownButton.getAttribute('aria-expanded') === 'true';
+            if (isExpanded) {
+                closeDropdown();
+            } else {
+                openDropdown();
+            }
+        }
+
+        function openDropdown() {
+            dropdownButton.setAttribute('aria-expanded', 'true');
+            submenu.style.display = 'block';
+            const firstMenuItem = submenu.querySelector('[role="menuitem"]');
+            firstMenuItem?.focus();
+        }
+
+        function closeDropdown() {
+            dropdownButton.setAttribute('aria-expanded', 'false');
+            submenu.style.display = '';
+        }
+
+        // Event listeners
+        dropdownButton.addEventListener('click', handleDropdownClick);
+        submenu.addEventListener('keydown', handleDropdownKeyboard);
+        
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+    }
+
+    // Return public API
+    return { init };
 })();
+
+// Initialize the accessibility features
+AccessibleUI.init();

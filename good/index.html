@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <!-- Header landmark with company branding and navigation -->
     <header class="site-header">
         <div class="header-container">
@@ -66,7 +67,7 @@
     </header>
 
     <!-- Main content landmark -->
-    <main class="main-content">
+        <main id="main-content" class="main-content">
         <div class="content-container">
             <h1>Welcome to the Screen Reader Demo</h1>
             <p>This page demonstrates accessible web development practices following WCAG 2.2 guidelines.</p>
@@ -98,6 +99,42 @@
                     Use the Tab key to navigate through interactive elements. The Info menu can be activated with Enter or Space, and navigated with arrow keys.
                 </p>
             </section>
+            
+            <section class="demo-section">
+                <h2 id="form">Form</h2>
+                <p>This section demonstrates accessible form elements and validation patterns.</p>
+
+                <form id="demo-form" novalidate aria-labelledby="form-title">
+                    <h3 id="form-title">Sign Up</h3>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="name">
+                                Name <span aria-hidden="true" class="required-indicator">*</span>
+                            </label>
+                            <input type="text" id="name" name="name" required autocomplete="name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="email">
+                                Email <span aria-hidden="true" class="required-indicator">*</span>
+                            </label>
+                            <input type="email" id="email" name="email" required autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-field">
+                            <label for="password">
+                                Password
+                            </label>
+                            <input type="password" id="password" name="password" 
+                                minlength="8">
+                        </div>
+                    </div>
+                    <button type="submit">Submit</button>
+                </form>
+            </section>
+
             
             <section class="demo-section">
                 <h2 id="disclosures-and-dialogs">Disclosures and Dialogs</h2>
@@ -269,7 +306,7 @@
 
                 <!-- Basic Data Table Example -->
                 <div class="table-example">
-                    <h4>Basic Data Table</h4>
+                    <h3>Basic Data Table</h3>
                     <p class="section-description">A basic data table demonstrates proper use of table semantics including caption, headers, and data relationships. The table is responsive and includes proper labeling for screen readers.</p>
                     
                     <div class="table-container">
@@ -309,7 +346,7 @@
 
                 <!-- Complex Data Table Example -->
                 <div class="table-example">
-                    <h4>Complex Data Table</h4>
+                    <h3>Complex Data Table</h3>
                     <p class="section-description">A complex data table showing multiple header relationships and grouped data. This example demonstrates how to handle multi-level headers and data relationships while maintaining accessibility.</p>
                     
                     <div class="table-container">
@@ -365,7 +402,7 @@
                 </div>
 
                 <div class="table-example">
-                    <h4>Tabs</h4>
+                    <h3>Tabs</h3>
                     <p class="section-description">A tabbed interface allows users to switch between different views or sections of content without leaving the page. This example demonstrates how to create accessible tabs using ARIA roles and properties.</p>
 
                     <div class="tab-container" role="tablist" aria-label="Form Controls">

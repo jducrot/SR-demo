@@ -5,9 +5,180 @@
     box-sizing: border-box;
 }
 
+/* Skip Link */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: #007bff;
+    color: white;
+    text-align: center;
+    transition: top 0.2s ease;
+    z-index: 1000;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+}
+
 html {
     font-size: 16px;
     scroll-behavior: smooth;
+}
+
+body {
+    font-family: Calibri, 'Segoe UI', system-ui, -apple-system, sans-serif;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Form styles */
+.required-indicator {
+    color: #cc0000;
+}
+
+/* Form field layout styles */
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.form-field label {
+    font-weight: 500;
+    color: #333;
+}
+
+.form-field input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 30rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+/* Submit button and general button styles */
+button[type="submit"],
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 120px;
+}
+
+button[type="submit"]:hover,
+.button:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+button[type="submit"]:active,
+.button:active {
+    transform: translateY(0);
+}
+
+button[type="submit"]:focus-visible,
+.button:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+.form-field input:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 1px;
+    border-color: #007bff;
+}
+
+/* Form validation styles */
+.form-status {
+    margin: 1rem 0;
+    padding: 1rem;
+    border-radius: 4px;
+    display: none;
+}
+
+.form-status.error {
+    display: block;
+    background-color: #fff3f3;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+.form-status.success {
+    display: block;
+    background-color: #f0fff4;
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+.form-field input.error {
+    border-color: #dc3545;
+    background-color: #fff3f3;
+}
+
+.error-message {
+    display: none;
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: #fff3f3;
+    border-left: 3px solid #dc3545;
+}
+
+.error-message.active {
+    display: block;
+    animation: errorFadeIn 0.2s ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .error-message.active {
+        animation: none;
+    }
+}
+
+@keyframes errorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.field-description {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+.required-indicator {
+    color: #dc3545;
+    margin-left: 0.25rem;
 }
 
 body {
@@ -31,6 +202,7 @@ body {
     outline: 3px solid #0066cc;
     outline-offset: 2px;
     box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8);
+    transition: outline-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* High contrast focus for buttons with background colors - keyboard only */
